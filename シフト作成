@@ -1,65 +1,65 @@
+#Excelからデータを読み込む
 import openpyxl
 from openpyxl import Workbook
 wb = openpyxl.load_workbook('shift3.xlsx')
 sheet = wb.get_sheet_by_name('Sheet1')
 
-member_name = []
-date = []
-day_of_the_week = {}
-for row_of_cell_objects in sheet['A4':'A29']:
+member_name = []#メンバー
+date = []#日付
+for row_of_cell_objects in sheet['A4':'A29']:#メンバーの名前を読み込む
     for cell_obj in row_of_cell_objects:
         member_name.append(cell_obj.value)
-for row_of_cell_objects in sheet['F3':'T3']:
+for row_of_cell_objects in sheet['F3':'T3']:#日付を読み込む
     for cell_obj in row_of_cell_objects:
         date.append(cell_obj.value)
         
-day_week = []
-for row_of_cell_objects in sheet['F2':'T2']:
+day_week = []#曜日
+day_of_the_week = {}#各日付の曜日
+for row_of_cell_objects in sheet['F2':'T2']:#曜日を読み込む
     for cell_obj in row_of_cell_objects:
         day_week.append(cell_obj.value)  
-for i in range(15):
-            day_of_the_week[date[i]] = day_week[i]    
-            
-member_name_N = {}
-member_name_S = {}
-member_name_W = {}
-member_name_R = {}
-for i in range(26):
-    member_name_N[member_name[i]] = sheet['B' + str(i+4)].value
-for i in range(26):
-    member_name_S[member_name[i]] = sheet['C' + str(i+4)].value    
-for i in range(26):
-    member_name_W[member_name[i]] = sheet['D' + str(i+4)].value
-for i in range(26):
-    member_name_R[member_name[i]] = sheet['E' + str(i+4)].value     
-    
+for i in range(15):#日付と曜日を紐付ける
+            day_of_the_week[date[i]] = day_week[i]
 
-hope_shift = list(range(sheet.max_column - 1))
+member_name_N = {}#肉場ができる人
+member_name_S = {}#寿司場ができる人
+member_name_W = {}#洗い場ができる人
+member_name_R = {}#レジ締めができる人
+for i in range(26):#肉場ができる人を読み込む
+    member_name_N[member_name[i]] = sheet['B' + str(i+4)].value
+for i in range(26):#寿司場ができる人を読み込む
+    member_name_S[member_name[i]] = sheet['C' + str(i+4)].value    
+for i in range(26):#洗い場ができる人を読み込む
+    member_name_W[member_name[i]] = sheet['D' + str(i+4)].value
+for i in range(26):#レジ締めができる人を読み込む
+    member_name_R[member_name[i]] = sheet['E' + str(i+4)].value 
+    
+hope_shift = list(range(sheet.max_column - 1))#各メンバーのシフト希望
 
                   
-for i in range(sheet.max_column - 1):
+for i in range(sheet.max_column - 1):#各メンバーのシフト希望を読み込む
     hope_shift[i] = []
     for row_of_cell_objects in sheet['F' + str(i+4):'T' + str(i+4) ]:
         for cell_obj in row_of_cell_objects:  
             hope_shift[i].append(cell_obj.value)
-                    
-date_shift = list(range(15))
+
+date_shift = list(range(15))#日付ごとの各メンバーのシフト
 for i in range(15):
     date_shift[i] = []   
-for i in range(0,15):    
+for i in range(0,15):#日付とメンバーのシフトを紐付ける    
     for column in sheet.iter_rows(min_row=4, min_col=6+i,max_row=29,max_col=6+i):
         for cell in column:
-            date_shift[i].append(cell.value)
-       
-day_shift_A = list(range(15))
-day_shift_AH = list(range(15))
-day_shift_B = list(range(15))
-day_shift_C = list(range(15))
-day_shift_F = list(range(15))
-day_shift_H = list(range(15))
-day_shift_I = list(range(15))
-day_shift_II = list(range(15))
-day_shift_J = list(range(15))
+            date_shift[i].append(cell.value)  
+
+day_shift_A = list(range(15))#A(10時30分)でシフト希望をだしたメンバー
+day_shift_AH = list(range(15))#A-H(1日)でシフト希望をだしたメンバー
+day_shift_B = list(range(15))#B(11時00分)でシフト希望をだしたメンバー
+day_shift_C = list(range(15))#C(12時00分)でシフト希望をだしたメンバー
+day_shift_F = list(range(15))#F(15時30分)でシフト希望をだしたメンバー
+day_shift_H = list(range(15))#H(17時00分)でシフト希望をだしたメンバー
+day_shift_I = list(range(15))#I(18時00分)でシフト希望をだしたメンバー
+day_shift_II = list(range(15))#II(18時30分)でシフト希望をだしたメンバー
+day_shift_J = list(range(15))#J(19時30分)でシフト希望をだしたメンバー
 for i in range(15):
     day_shift_A[i] = [] 
     day_shift_AH[i] = []
@@ -72,189 +72,92 @@ for i in range(15):
     day_shift_J[i] = []
 for i in range(0,15):    
     j=0
-    for column in sheet.iter_rows(min_row=4, min_col=6+i,max_row=29,max_col=6+i):
+    for column in sheet.iter_rows(min_row=4, min_col=6+i,max_row=29,max_col=6+i):#各日付に各メンバーのシフト希望を紐付ける
         for cell in column:
             j+=1
-            if cell.value == 'A':
+            if cell.value == 'A':#各日付にAでシフト希望を出したメンバーを紐付ける
                 day_shift_A[i].append(member_name[j-1])
-            if cell.value == 'A-H':
+            if cell.value == 'A-H':#各日付にA-Hでシフト希望を出したメンバーを紐付ける
                 day_shift_AH[i].append(member_name[j-1])    
-            if cell.value == 'B':
+            if cell.value == 'B':#各日付にBでシフト希望を出したメンバーを紐付ける
                 day_shift_B[i].append(member_name[j-1])
-            if cell.value == 'C':
+            if cell.value == 'C':#各日付にCでシフト希望を出したメンバーを紐付ける
                 day_shift_C[i].append(member_name[j-1])
-            if cell.value == 'F':
+            if cell.value == 'F':#各日付にFでシフト希望を出したメンバーを紐付ける
                 day_shift_F[i].append(member_name[j-1])   
-            if cell.value == 'H':
+            if cell.value == 'H':#各日付にHでシフト希望を出したメンバーを紐付ける
                 day_shift_H[i].append(member_name[j-1]) 
-            if cell.value == 'I':
+            if cell.value == 'I':#各日付にIでシフト希望を出したメンバーを紐付ける
                 day_shift_I[i].append(member_name[j-1])
-            if cell.value == 'II':
+            if cell.value == 'II':#各日付にIIでシフト希望を出したメンバーを紐付ける
                 day_shift_II[i].append(member_name[j-1])
-            if cell.value == 'J':
+            if cell.value == 'J':#各日付にJでシフト希望を出したメンバーを紐付ける
                 day_shift_J[i].append(member_name[j-1])
-                
-ten_A_H_day = list(range(15))
-for i in range(15):
-    ten_A_H_day[i] = []
-ten_A_N_day = list(range(15))
-for i in range(15):
-    ten_A_N_day[i] = []    
-ten_A_S_day = list(range(15))
-for i in range(15):
-    ten_A_S_day[i] = []   
-ten_B_day = list(range(15))
-for i in range(15):
-    ten_B_day[i] = []
-ten_C_day = list(range(15))
-for i in range(15):
-    ten_C_day[i] = []
-ten_D_day = list(range(15))
-for i in range(15):
-    ten_D_day[i] = []
-ten_F_day = list(range(15))
-for i in range(15):
-    ten_F_day[i] = []
-ten_H_H_day = list(range(15))
-for i in range(15):
-    ten_H_H_day[i] = []
-ten_H_N_day = list(range(15))
-for i in range(15):
-    ten_H_N_day[i] = []
 
-ten_H_S_day = list(range(15))
-for i in range(15):
-    ten_H_S_day[i] = []        
-ten_I_day = list(range(15))
-for i in range(15):
-    ten_I_day[i] = []
-ten_HI_day = list(range(15))
-for i in range(15):
-    ten_HI_day[i] = []   
-ten_HIJ_day = list(range(15))
-for i in range(15):
-    ten_HIJ_day[i] = []     
-ten_II_day = list(range(15))
-for i in range(15):
-    ten_II_day[i] = []    
-ten_J_day = list(range(15))
-for i in range(15):
-    ten_J_day[i] = []    
-ten = list(range(100000))
-for i in range(100000):
-    ten[i] = []    
-ten_day_shift = list(range(15))
-for i in range(15):
-    ten_day_shift[i] = []
-        
-
-count=0
-for i in range(1,16):
-
-    
-    if day_of_the_week[i] == '土' or day_of_the_week[i] == '日':
-        print('-----')
-    else:  
-        for j in range(0,len(day_shift_H[i-1])):
-            if member_name_N[day_shift_H[i-1][j]] == 1:
-                ten_H_N_day[i-1].append(day_shift_H[i-1][j])
-            if member_name_S[day_shift_H[i-1][j]] == 1:
-                ten_H_S_day[i-1].append(day_shift_H[i-1][j])
-        for j in range(0,len(ten_H_N_day[i-1])):
-            for k in range(0,len(ten_H_S_day[i-1])):
-                if ten_H_S_day[i-1][k] != ten_H_N_day[i-1][j]:
-                    for l in range(0,len(day_shift_H[i-1])):
-                        if ten_H_S_day[i-1][k] != day_shift_H[i-1][l] and ten_H_N_day[i-1][j] != day_shift_H[i-1][l]:
-                            ten_HI_day[i-1] = day_shift_I[i-1] + day_shift_H[i-1]
-                            for m in range(0,len(ten_HI_day[i-1])):
-                                if ten_H_S_day[i-1][k] != ten_HI_day[i-1][m] and ten_H_N_day[i-1][j] != ten_HI_day[i-1][m] and day_shift_H[i-1][l] != ten_HI_day[i-1][m]:
-                                    ten_HIJ_day[i-1] = day_shift_H[i-1] + ten_HI_day[i-1]
-                                    for n in range(0,len(ten_HIJ_day[i-1])):
-                                        if ten_H_S_day[i-1][k] != ten_HIJ_day[i-1][n] and ten_H_N_day[i-1][j] != ten_HIJ_day[i-1][n] and day_shift_H[i-1][l] != ten_HIJ_day[i-1][n] and ten_HI_day[i-1][m] != ten_HIJ_day[i-1][n]:
-                                            count += 1
-                                            ten[count-1].append(ten_H_N_day[i-1][j])
-                                            ten[count-1].append(ten_H_S_day[i-1][k])
-                                            ten[count-1].append(day_shift_H[i-1][l])
-                                            ten[count-1].append(ten_HI_day[i-1][m])
-                                            ten[count-1].append(ten_HIJ_day[i-1][n])
-                                            ten_day_shift[i-1].append(ten[count-1]) 
-  
-  ten_A_day = list(range(15))
+#各日付の各時間帯ごとのシフト希望を出したメンバーを入力する
+ten_A_day = list(range(15))#Aの時間帯に入れるメンバー
 for i in range(15):
     ten_A_day[i] = []
-ten_A_H_day = list(range(15))
+ten_A_H_day = list(range(15))#A_Hで入れるメンバー
 for i in range(15):
     ten_A_H_day[i] = []
-ten_A_N_day = list(range(15))
+ten_A_N_day = list(range(15))#A_Nで入れるメンバー
 for i in range(15):
     ten_A_N_day[i] = []    
-ten_A_S_day = list(range(15))
+ten_A_S_day = list(range(15))#A_Sで入れるメンバー
 for i in range(15):
     ten_A_S_day[i] = []   
-ten_B_day = list(range(15))
+ten_B_day = list(range(15))#Bで入れるメンバー
 for i in range(15):
     ten_B_day[i] = []
-ten_C_day = list(range(15))
+ten_C_day = list(range(15))#Cで入れるメンバー
 for i in range(15):
     ten_C_day[i] = []
-ten_D_day = list(range(15))
-for i in range(15):
-    ten_D_day[i] = []
-ten_F_day = list(range(15))
+ten_F_day = list(range(15))#Fで入れるメンバー
 for i in range(15):
     ten_F_day[i] = []
-ten_H_day = list(range(15))
+ten_H_day = list(range(15))#Hで入れるメンバー
 for i in range(15):
     ten_H_day[i] = []    
-ten_H_H_day = list(range(15))
+ten_H_H_day = list(range(15))#H_Hで入れるメンバー
 for i in range(15):
     ten_H_H_day[i] = []
-ten_H_H1_day = list(range(15))
+ten_H_H1_day = list(range(15))#H_H1で入れるメンバー
 for i in range(15):
     ten_H_H1_day[i] = []
-ten_H_H2_day = list(range(15))
+ten_H_H2_day = list(range(15))#H_H2で入れるメンバー
 for i in range(15):
     ten_H_H2_day[i] = []    
-ten_H_N_day = list(range(15))
+ten_H_N_day = list(range(15))#H_Nで入れるメンバー
 for i in range(15):
     ten_H_N_day[i] = []
-
-ten_H_S_day = list(range(15))
+ten_H_S_day = list(range(15))#H_Sで入れるメンバー
 for i in range(15):
     ten_H_S_day[i] = []        
-ten_I_day = list(range(15))
+ten_I_day = list(range(15))#Iで入れるメンバー
 for i in range(15):
     ten_I_day[i] = []
-ten_HI_day = list(range(15))
+ten_HI_day = list(range(15))#Iで入れるメンバー
 for i in range(15):
-    ten_HI_day[i] = []   
-ten_HIJ_day = list(range(15))
-for i in range(15):
-    ten_HIJ_day[i] = []     
-ten_II_day = list(range(15))
+    ten_HI_day[i] = []     
+ten_II_day = list(range(15))#IIで入れるメンバー
 for i in range(15):
     ten_II_day[i] = []    
-ten_J_day = list(range(15))
+ten_J_day = list(range(15))#Jで入れるメンバー
 for i in range(15):
-    ten_J_day[i] = []    
-ten = list(range(100000))
-for i in range(100000):
-    ten[i] = []    
-ten_day_shift = list(range(15))
+    ten_J_day[i] = []       
+ten_day_shift = list(range(15))#ここに借りのシフトを入れていく
 for i in range(15):
-    ten_day_shift[i] = []
-com_day_shift = list(range(15))
-for i in range(15):
-    com_day_shift[i] = []        
+    ten_day_shift[i] = []        
 
 count=0
-for i in range(1,16):
-    ten = list(range(100000))
+for i in range(1,16):#i:日付、1日毎にシフトを決めていく
+    ten = list(range(100000))#ここに書く時間帯の仮シフトを追加していく
     for j in range(100000):
         ten[j] = []
     
-    if day_of_the_week[i] == '土' or day_of_the_week[i] == '日':
-        ten_A_day[i-1] = day_shift_A[i-1] + day_shift_AH[i-1]
+    if day_of_the_week[i] == '土' or day_of_the_week[i] == '日':#日付が休日の時、処理を行う
+        ten_A_day[i-1] = day_shift_A[i-1] + day_shift_AH[i-1]#
         ten_F_day[i-1] = day_shift_AH[i-1] + day_shift_F[i-1]
         ten_I_day[i-1] = day_shift_AH[i-1] + day_shift_I[i-1] + day_shift_H[i-1]
         ten_II_day[i-1] = day_shift_AH[i-1] + day_shift_I[i-1] + day_shift_H[i-1] + day_shift_II[i-1]
@@ -437,176 +340,201 @@ for i in range(1,16):
                                                                             ten[count-1].append(ten_J_day[i-1][p])
                                                                             ten_day_shift[i-1].append(ten[count-1])
                                                                             
-    if '熊田' not in day_shift_AH[i-1] and '赤畑' in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#赤畑
-        for j in range(len(day_shift_AH[i-1])):#A_H-H_N
-            if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
-                for k in range(len(day_shift_AH[i-1])):#A_N-H2
-                    if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
-                        for l in range(len(day_shift_AH[i-1])):#B-H_S
-                            if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
-                                for m in range(len(day_shift_AH[i-1])):#A_S-H1
-                                    if day_shift_AH[i-1][m] in ten_A_S_day[i-1] and day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
-                                        for n in range(len(day_shift_A[i-1])):#C
-                                            if day_shift_A[i-1][n] != day_shift_AH[i-1][j] and day_shift_A[i-1][n] != day_shift_AH[i-1][k] and day_shift_A[i-1][n] != day_shift_AH[i-1][l] and day_shift_A[i-1][n] != day_shift_AH[i-1][m] :
-                                                for o in range(len(ten_F_day[i-1])):#F
-                                                    if ten_F_day[i-1][o] != day_shift_AH[i-1][j] and ten_F_day[i-1][o] != day_shift_AH[i-1][k] and ten_F_day[i-1][o] != day_shift_AH[i-1][l] and ten_F_day[i-1][o] != day_shift_AH[i-1][m] and ten_F_day[i-1][o] != day_shift_AH[i-1][n]:
-                                                        for p in range(len(ten_II_day[i-1])):#II
-                                                            if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_AH[i-1][n] and ten_II_day[i-1][p] != ten_F_day[i-1][o] and ten_II_day[i-1][p] != '赤畑':
-                                                                for q in range(len(ten_J_day[i-1])):#J
-                                                                    if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_AH[i-1][n] and ten_J_day[i-1][q] != ten_F_day[i-1][o] and ten_J_day[i-1][q] != ten_II_day[i-1][p] and ten_J_day[i-1][q] != '赤畑':
-                                                                        if member_name_W[ten_F_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
-                                                                            if member_name_R[ten_F_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
-                                                                                count += 1
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_A[i-1][n])
-                                                                                ten[count-1].append(ten_F_day[i-1][o])
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append('赤畑')
-                                                                                ten[count-1].append(ten_II_day[i-1][p])
-                                                                                ten[count-1].append(ten_J_day[i-1][q])
-                                                                                ten_day_shift[i-1].append(ten[count-1])                                                                          
-    if '熊田' not in day_shift_AH[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' in day_shift_F[i-1]:#桑名
-        count=0
-        for j in range(len(day_shift_AH[i-1])):#A_H-H_N
-            if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
-                for k in range(len(day_shift_AH[i-1])):#A_N-H2
-                    if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
-                        for l in range(len(day_shift_AH[i-1])):#B-H_S
-                            if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
-                                for m in range(len(day_shift_AH[i-1])):#A_S-H1
-                                    if day_shift_AH[i-1][m] in ten_A_S_day[i-1] and day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
-                                        for n in range(len(day_shift_A[i-1])):#C
-                                            if day_shift_A[i-1][n] != day_shift_AH[i-1][j] and day_shift_A[i-1][n] != day_shift_AH[i-1][k] and day_shift_A[i-1][n] != day_shift_AH[i-1][l] and day_shift_A[i-1][n] != day_shift_AH[i-1][m]:
-                                                for o in range(len(ten_I_day[i-1])):#I
-                                                    if ten_I_day[i-1][o] != day_shift_AH[i-1][j] and ten_I_day[i-1][o] != day_shift_AH[i-1][k] and ten_I_day[i-1][o] != day_shift_AH[i-1][l] and ten_I_day[i-1][o] != day_shift_AH[i-1][m] and ten_I_day[o] != day_shift_A[i-1][n]:
-                                                        for p in range(len(ten_II_day[i-1])):#II
-                                                            if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_A[i-1][n] and ten_II_day[i-1][p] != ten_II_day[i-1][o] and ten_II_day[i-1][p] != '桑名':
-                                                                for q in range(len(ten_J_day[i-1])):#J
-                                                                    if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_A[i-1][n] and ten_J_day[i-1][q] != ten_II_day[i-1][o] and ten_J_day[i-1][q] != ten_I_day[i-1][p] and ten_J_day[i-1][q] != '桑名':
-                                                                        if member_name_W[ten_I_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
-                                                                            if member_name_R[ten_I_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
-                                                                                count += 1
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_A[i-1][n])
-                                                                                ten[count-1].append('桑名')
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append(ten_I_day[i-1][o])
-                                                                                ten[count-1].append(ten_II_day[i-1][p])
-                                                                                ten[count-1].append(ten_J_day[i-1][q])
-                                                                                ten_day_shift[i-1].append(ten[count-1])
-    if '熊田' in day_shift_A[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#熊田（昼）
-        for j in range(len(day_shift_AH[i-1])):#A_H-H_N
-            if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
-                for k in range(len(day_shift_AH[i-1])):#A_N-H2
-                    if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
-                        for l in range(len(day_shift_AH[i-1])):#B-H_S
-                            if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
-                                for m in range(len(day_shift_AH[i-1])):#C-II
-                                    if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
-                                        for n in range(len(ten_F_day[i-1])):#F
-                                            if ten_F_day[i-1][n] != day_shift_AH[i-1][j] and ten_F_day[i-1][n] != day_shift_AH[i-1][k] and ten_F_day[i-1][n] != day_shift_AH[i-1][l] and ten_F_day[i-1][n] != day_shift_AH[i-1][m] :
-                                                for o in range(len(day_shift_H[i-1])):#H1
-                                                    if day_shift_H[i-1][o] != day_shift_AH[i-1][j] and day_shift_H[i-1][o] != day_shift_AH[i-1][k] and day_shift_H[i-1][o] != day_shift_AH[i-1][l] and day_shift_H[i-1][o] != day_shift_AH[i-1][m] and day_shift_H[i-1][o] != ten_F_day[i-1][n]:
-                                                        for p in range(len(ten_I_day[i-1])):#I
-                                                            if ten_I_day[i-1][p] != day_shift_AH[i-1][j] and ten_I_day[i-1][p] != day_shift_AH[i-1][k] and ten_I_day[i-1][p] != day_shift_AH[i-1][l] and ten_I_day[i-1][p] != day_shift_AH[i-1][m] and ten_I_day[i-1][p] != ten_F_day[i-1][n] and ten_I_day[i-1][p] != day_shift_H[i-1][o]:
-                                                                for q in range(len(ten_J_day[i-1])):#J
-                                                                    if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != ten_F_day[i-1][n] and ten_J_day[i-1][q] != day_shift_H[i-1][o] and ten_J_day[i-1][q] != ten_I_day[i-1][p]:
-                                                                        if member_name_W[day_shift_H[i-1][o]] == 1 or member_name_W[ten_I_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
-                                                                            if member_name_R[day_shift_H[i-1][o]] == 1 or member_name_R[ten_I_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
-                                                                                count += 1
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append('熊田')
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(ten_F_day[i-1][n])
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_H[i-1][o])
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append(ten_I_day[i-1][p])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(ten_J_day[i-1][q])
-                                                                                ten_day_shift[i-1].append(ten[count-1])  
-    if '熊田' in day_shift_H[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#熊田（夜）
-        for j in range(len(day_shift_AH[i-1])):#A_H-H_N
-            if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
-                for k in range(len(day_shift_AH[i-1])):#A_N-H2 
-                    if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
-                        for l in range(len(day_shift_AH[i-1])):#A_S-H1
-                            if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
-                                for m in range(len(day_shift_AH[i-1])):#B-I
-                                    if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
-                                        for n in range(len(day_shift_A[i-1])):#C
-                                            if day_shift_A[i-1][n] != day_shift_AH[i-1][j] and day_shift_A[i-1][n] != day_shift_AH[i-1][k] and day_shift_A[i-1][n] != day_shift_AH[i-1][l] and day_shift_A[i-1][n] != day_shift_AH[i-1][m] :
-                                                for o in range(len(ten_F_day[i-1])):#F
-                                                    if ten_F_day[i-1][o] != day_shift_AH[i-1][j] and ten_F_day[i-1][o] != day_shift_AH[i-1][k] and ten_F_day[i-1][o] != day_shift_AH[i-1][l] and ten_F_day[i-1][o] != day_shift_AH[i-1][m] and ten_F_day[i-1][o] != day_shift_A[i-1][n]:
-                                                        for p in range(len(ten_II_day[i-1])):#II
-                                                            if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_A[i-1][n] and ten_II_day[i-1][p] != ten_F_day[i-1][o]:
-                                                                for q in range(len(ten_J_day[i-1])):#J
-                                                                    if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_A[i-1][n] and ten_J_day[i-1][q] != ten_F_day[i-1][o] and ten_J_day[i-1][q] != ten_II_day[i-1][p]:
-                                                                        if member_name_W[ten_F_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
-                                                                            if member_name_R[ten_F_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
-                                                                                count += 1
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(day_shift_A[i-1][n])
-                                                                                ten[count-1].append(ten_F_day[i-1][o])
-                                                                                ten[count-1].append(day_shift_AH[i-1][j])
-                                                                                ten[count-1].append('熊田')
-                                                                                ten[count-1].append(day_shift_AH[i-1][l])
-                                                                                ten[count-1].append(day_shift_AH[i-1][k])
-                                                                                ten[count-1].append(day_shift_AH[i-1][m])
-                                                                                ten[count-1].append(ten_II_day[i-1][p])
-                                                                                ten[count-1].append(ten_J_day[i-1][q])
-                                                                                ten_day_shift[i-1].append(ten[count-1])  
-    if '熊田' in day_shift_AH[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#熊田（一日）
-        for j in range(len(day_shift_AH[i-1])):#A_H-H_N
-            if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
-                for k in range(len(day_shift_AH[i-1])):#A_N-H2
-                    if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
-                        for l in range(len(day_shift_AH[i-1])):#B-H1
-                            if day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
-                                for m in range(len(day_shift_AH[i-1])):#C-II
-                                    if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
-                                        for n in range(len(ten_F_day[i-1])):#F
+        if '熊田' not in day_shift_AH[i-1] and '赤畑' in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#赤畑
+            for j in range(len(day_shift_AH[i-1])):#A_H-H_N
+                if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
+                    for k in range(len(day_shift_AH[i-1])):#A_N-H2
+                        if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
+                            for l in range(len(day_shift_AH[i-1])):#B-H_S
+                                if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
+                                    for m in range(len(day_shift_AH[i-1])):#A_S-H1
+                                        if day_shift_AH[i-1][m] in ten_A_S_day[i-1] and day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
+                                            for n in range(len(day_shift_A[i-1])):#C
+                                                if day_shift_A[i-1][n] != day_shift_AH[i-1][j] and day_shift_A[i-1][n] != day_shift_AH[i-1][k] and day_shift_A[i-1][n] != day_shift_AH[i-1][l] and day_shift_A[i-1][n] != day_shift_AH[i-1][m] :
+                                                    for o in range(len(ten_F_day[i-1])):#F
+                                                        if ten_F_day[i-1][o] != day_shift_AH[i-1][j] and ten_F_day[i-1][o] != day_shift_AH[i-1][k] and ten_F_day[i-1][o] != day_shift_AH[i-1][l] and ten_F_day[i-1][o] != day_shift_AH[i-1][m] and ten_F_day[i-1][o] != day_shift_AH[i-1][n]:
+                                                            for p in range(len(ten_II_day[i-1])):#II
+                                                                if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_AH[i-1][n] and ten_II_day[i-1][p] != ten_F_day[i-1][o] and ten_II_day[i-1][p] != '赤畑':
+                                                                    for q in range(len(ten_J_day[i-1])):#J
+                                                                        if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_AH[i-1][n] and ten_J_day[i-1][q] != ten_F_day[i-1][o] and ten_J_day[i-1][q] != ten_II_day[i-1][p] and ten_J_day[i-1][q] != '赤畑':
+                                                                            if member_name_W[ten_F_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
+                                                                                if member_name_R[ten_F_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
+                                                                                    count += 1
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_A[i-1][n])
+                                                                                    ten[count-1].append(ten_F_day[i-1][o])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append('赤畑')
+                                                                                    ten[count-1].append(ten_II_day[i-1][p])
+                                                                                    ten[count-1].append(ten_J_day[i-1][q])
+                                                                                    ten_day_shift[i-1].append(ten[count-1])                                                                          
+        if '熊田' not in day_shift_AH[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' in day_shift_F[i-1]:#桑名
+            count=0
+            for j in range(len(day_shift_AH[i-1])):#A_H-H_N
+                if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
+                    for k in range(len(day_shift_AH[i-1])):#A_N-H2
+                        if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
+                            for l in range(len(day_shift_AH[i-1])):#B-H_S
+                                if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
+                                    for m in range(len(day_shift_AH[i-1])):#A_S-H1
+                                        if day_shift_AH[i-1][m] in ten_A_S_day[i-1] and day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
+                                            for n in range(len(day_shift_A[i-1])):#C
+                                                if day_shift_A[i-1][n] != day_shift_AH[i-1][j] and day_shift_A[i-1][n] != day_shift_AH[i-1][k] and day_shift_A[i-1][n] != day_shift_AH[i-1][l] and day_shift_A[i-1][n] != day_shift_AH[i-1][m]:
+                                                    for o in range(len(ten_I_day[i-1])):#I
+                                                        if ten_I_day[i-1][o] != day_shift_AH[i-1][j] and ten_I_day[i-1][o] != day_shift_AH[i-1][k] and ten_I_day[i-1][o] != day_shift_AH[i-1][l] and ten_I_day[i-1][o] != day_shift_AH[i-1][m] and ten_I_day[o] != day_shift_A[i-1][n]:
+                                                            for p in range(len(ten_II_day[i-1])):#II
+                                                                if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_A[i-1][n] and ten_II_day[i-1][p] != ten_II_day[i-1][o] and ten_II_day[i-1][p] != '桑名':
+                                                                    for q in range(len(ten_J_day[i-1])):#J
+                                                                        if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_A[i-1][n] and ten_J_day[i-1][q] != ten_II_day[i-1][o] and ten_J_day[i-1][q] != ten_I_day[i-1][p] and ten_J_day[i-1][q] != '桑名':
+                                                                            if member_name_W[ten_I_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
+                                                                                if member_name_R[ten_I_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
+                                                                                    count += 1
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_A[i-1][n])
+                                                                                    ten[count-1].append('桑名')
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append(ten_I_day[i-1][o])
+                                                                                    ten[count-1].append(ten_II_day[i-1][p])
+                                                                                    ten[count-1].append(ten_J_day[i-1][q])
+                                                                                    ten_day_shift[i-1].append(ten[count-1])
+        if '熊田' in day_shift_A[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#熊田（昼）
+            for j in range(len(day_shift_AH[i-1])):#A_H-H_N
+                if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
+                    for k in range(len(day_shift_AH[i-1])):#A_N-H2
+                        if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
+                            for l in range(len(day_shift_AH[i-1])):#B-H_S
+                                if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
+                                    for m in range(len(day_shift_AH[i-1])):#C-II
+                                        if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
+                                            for n in range(len(ten_F_day[i-1])):#F
+                                                if ten_F_day[i-1][n] != day_shift_AH[i-1][j] and ten_F_day[i-1][n] != day_shift_AH[i-1][k] and ten_F_day[i-1][n] != day_shift_AH[i-1][l] and ten_F_day[i-1][n] != day_shift_AH[i-1][m] :
+                                                    for o in range(len(day_shift_H[i-1])):#H1
+                                                        if day_shift_H[i-1][o] != day_shift_AH[i-1][j] and day_shift_H[i-1][o] != day_shift_AH[i-1][k] and day_shift_H[i-1][o] != day_shift_AH[i-1][l] and day_shift_H[i-1][o] != day_shift_AH[i-1][m] and day_shift_H[i-1][o] != ten_F_day[i-1][n]:
+                                                            for p in range(len(ten_I_day[i-1])):#I
+                                                                if ten_I_day[i-1][p] != day_shift_AH[i-1][j] and ten_I_day[i-1][p] != day_shift_AH[i-1][k] and ten_I_day[i-1][p] != day_shift_AH[i-1][l] and ten_I_day[i-1][p] != day_shift_AH[i-1][m] and ten_I_day[i-1][p] != ten_F_day[i-1][n] and ten_I_day[i-1][p] != day_shift_H[i-1][o]:
+                                                                    for q in range(len(ten_J_day[i-1])):#J
+                                                                        if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != ten_F_day[i-1][n] and ten_J_day[i-1][q] != day_shift_H[i-1][o] and ten_J_day[i-1][q] != ten_I_day[i-1][p]:
+                                                                            if member_name_W[day_shift_H[i-1][o]] == 1 or member_name_W[ten_I_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
+                                                                                if member_name_R[day_shift_H[i-1][o]] == 1 or member_name_R[ten_I_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
+                                                                                    count += 1
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append('熊田')
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(ten_F_day[i-1][n])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_H[i-1][o])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append(ten_I_day[i-1][p])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(ten_J_day[i-1][q])
+                                                                                    ten_day_shift[i-1].append(ten[count-1])  
+        if '熊田' in day_shift_H[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#熊田（夜）
+            for j in range(len(day_shift_AH[i-1])):#A_H-H_N
+                if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
+                    for k in range(len(day_shift_AH[i-1])):#A_N-H2 
+                        if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
+                            for l in range(len(day_shift_AH[i-1])):#A_S-H1
+                                if day_shift_AH[i-1][l] in ten_A_S_day[i-1] and day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
+                                    for m in range(len(day_shift_AH[i-1])):#B-I
+                                        if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
+                                            for n in range(len(day_shift_A[i-1])):#C
+                                                if day_shift_A[i-1][n] != day_shift_AH[i-1][j] and day_shift_A[i-1][n] != day_shift_AH[i-1][k] and day_shift_A[i-1][n] != day_shift_AH[i-1][l] and day_shift_A[i-1][n] != day_shift_AH[i-1][m] :
+                                                    for o in range(len(ten_F_day[i-1])):#F
+                                                        if ten_F_day[i-1][o] != day_shift_AH[i-1][j] and ten_F_day[i-1][o] != day_shift_AH[i-1][k] and ten_F_day[i-1][o] != day_shift_AH[i-1][l] and ten_F_day[i-1][o] != day_shift_AH[i-1][m] and ten_F_day[i-1][o] != day_shift_A[i-1][n]:
+                                                            for p in range(len(ten_II_day[i-1])):#II
+                                                                if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_A[i-1][n] and ten_II_day[i-1][p] != ten_F_day[i-1][o]:
+                                                                    for q in range(len(ten_J_day[i-1])):#J
+                                                                        if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_A[i-1][n] and ten_J_day[i-1][q] != ten_F_day[i-1][o] and ten_J_day[i-1][q] != ten_II_day[i-1][p]:
+                                                                            if member_name_W[ten_F_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
+                                                                                if member_name_R[ten_F_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
+                                                                                    count += 1
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(day_shift_A[i-1][n])
+                                                                                    ten[count-1].append(ten_F_day[i-1][o])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][j])
+                                                                                    ten[count-1].append('熊田')
+                                                                                    ten[count-1].append(day_shift_AH[i-1][l])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][k])
+                                                                                    ten[count-1].append(day_shift_AH[i-1][m])
+                                                                                    ten[count-1].append(ten_II_day[i-1][p])
+                                                                                    ten[count-1].append(ten_J_day[i-1][q])
+                                                                                    ten_day_shift[i-1].append(ten[count-1])  
+        if '熊田' in day_shift_AH[i-1] and '赤畑' not in day_shift_I[i-1] and '桑名' not in day_shift_H[i-1]:#熊田（一日）
+            for j in range(len(day_shift_AH[i-1])):#A_H-H_N
+                if day_shift_AH[i-1][j] in ten_H_N_day[i-1]:
+                    for k in range(len(day_shift_AH[i-1])):#A_N-H2
+                        if day_shift_AH[i-1][k] in ten_A_N_day[i-1] and day_shift_AH[i-1][j] != day_shift_AH[i-1][k]:
+                            for l in range(len(day_shift_AH[i-1])):#B-H1
+                                if day_shift_AH[i-1][l] != day_shift_AH[i-1][j] and day_shift_AH[i-1][l] != day_shift_AH[i-1][k]:
+                                    for m in range(len(day_shift_AH[i-1])):#C-II
+                                        if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
+                                            for n in range(len(ten_F_day[i-1])):#F
+
+                                                if ten_F_day[i-1][n] != day_shift_AH[i-1][j] and ten_F_day[i-1][n] != day_shift_AH[i-1][k] and ten_F_day[i-1][n] != day_shift_AH[i-1][l] and ten_F_day[i-1][n] != day_shift_AH[i-1][m] :
+                                                    for o in range(len(ten_I_day[i-1])):#I
+
+                                                        if ten_I_day[i-1][o] != day_shift_AH[i-1][j] and ten_I_day[i-1][o] != day_shift_AH[i-1][k] and ten_I_day[i-1][o] != day_shift_AH[i-1][l] and ten_I_day[i-1][o] != day_shift_AH[i-1][m] and ten_I_day[i-1][o] != ten_F_day[i-1][n]:
+                                                            for p in range(len(ten_J_day[i-1])):#II
+
+                                                                if ten_J_day[i-1][p] != day_shift_AH[i-1][j] and ten_J_day[i-1][p] != day_shift_AH[i-1][k] and ten_J_day[i-1][p] != day_shift_AH[i-1][l] and ten_J_day[i-1][p] != day_shift_AH[i-1][m] and ten_J_day[i-1][p] != ten_F_day[i-1][n] and ten_J_day[i-1][p] != ten_I_day[i-1][o]:
+
+                                                                    if member_name_W[ten_F_day[i-1][n]] == 1 or member_name_W[ten_I_day[i-1][o]] == 1 or member_name_W[ten_J_day[i-1][p]]:
+                                                                        if member_name_R[ten_F_day[i-1][n]] == 1 or member_name_R[ten_I_day[i-1][o]] == 1 or member_name_R[ten_J_day[i-1][p]]:
+                                                                            count += 1
+                                                                            ten[count-1].append(day_shift_AH[i-1][k])
+                                                                            ten[count-1].append('熊田')
+                                                                            ten[count-1].append(day_shift_AH[i-1][j])
+                                                                            ten[count-1].append(day_shift_AH[i-1][l])
+                                                                            ten[count-1].append(day_shift_AH[i-1][m])
+                                                                            ten[count-1].append(ten_F_day[i-1][n])
+                                                                            ten[count-1].append(day_shift_AH[i-1][j])
+                                                                            ten[count-1].append('熊田')
+                                                                            ten[count-1].append(day_shift_AH[i-1][l])
+                                                                            ten[count-1].append(day_shift_AH[i-1][k])
+                                                                            ten[count-1].append(ten_I_day[i-1][o])
+                                                                            ten[count-1].append(day_shift_AH[i-1][m])
+                                                                            ten[count-1].append(ten_J_day[i-1][p])
+                                                                            ten_day_shift[i-1].append(ten[count-1])       
+    else: #平日の時、処理を行う
+        for j in range(0,len(day_shift_H[i-1])):
+            if member_name_N[day_shift_H[i-1][j]] == 1:
+                ten_H_N_day[i-1].append(day_shift_H[i-1][j])
+            if member_name_S[day_shift_H[i-1][j]] == 1:
+                ten_H_S_day[i-1].append(day_shift_H[i-1][j])
+        for j in range(0,len(ten_H_N_day[i-1])):
+            for k in range(0,len(ten_H_S_day[i-1])):
+                if ten_H_S_day[i-1][k] != ten_H_N_day[i-1][j]:
+                    for l in range(0,len(day_shift_H[i-1])):
+                        if ten_H_S_day[i-1][k] != day_shift_H[i-1][l] and ten_H_N_day[i-1][j] != day_shift_H[i-1][l]:
+                            ten_I_day[i-1] = day_shift_I[i-1] + day_shift_H[i-1]
+                            for m in range(0,len(ten_I_day[i-1])):
+                                if ten_H_S_day[i-1][k] != ten_I_day[i-1][m] and ten_H_N_day[i-1][j] != ten_I_day[i-1][m] and day_shift_H[i-1][l] != ten_I_day[i-1][m]:
+                                    ten_J_day[i-1] = day_shift_H[i-1] + ten_I_day[i-1]
+                                    for n in range(0,len(ten_J_day[i-1])):
+                                        if ten_H_S_day[i-1][k] != ten_J_day[i-1][n] and ten_H_N_day[i-1][j] != ten_J_day[i-1][n] and day_shift_H[i-1][l] != ten_J_day[i-1][n] and ten_I_day[i-1][m] != ten_J_day[i-1][n]:
+                                            count += 1
+                                            ten[count-1].append(ten_H_N_day[i-1][j])
+                                            ten[count-1].append(ten_H_S_day[i-1][k])
+                                            ten[count-1].append(day_shift_H[i-1][l])
+                                            ten[count-1].append(ten_I_day[i-1][m])
+                                            ten[count-1].append(ten_J_day[i-1][n])
+                                            ten_day_shift[i-1].append(ten[count-1]) 
                                             
-                                            if ten_F_day[i-1][n] != day_shift_AH[i-1][j] and ten_F_day[i-1][n] != day_shift_AH[i-1][k] and ten_F_day[i-1][n] != day_shift_AH[i-1][l] and ten_F_day[i-1][n] != day_shift_AH[i-1][m] :
-                                                for o in range(len(ten_I_day[i-1])):#I
-                                                   
-                                                    if ten_I_day[i-1][o] != day_shift_AH[i-1][j] and ten_I_day[i-1][o] != day_shift_AH[i-1][k] and ten_I_day[i-1][o] != day_shift_AH[i-1][l] and ten_I_day[i-1][o] != day_shift_AH[i-1][m] and ten_I_day[i-1][o] != ten_F_day[i-1][n]:
-                                                        for p in range(len(ten_J_day[i-1])):#II
-                                                            
-                                                            if ten_J_day[i-1][p] != day_shift_AH[i-1][j] and ten_J_day[i-1][p] != day_shift_AH[i-1][k] and ten_J_day[i-1][p] != day_shift_AH[i-1][l] and ten_J_day[i-1][p] != day_shift_AH[i-1][m] and ten_J_day[i-1][p] != ten_F_day[i-1][n] and ten_J_day[i-1][p] != ten_I_day[i-1][o]:
-                                               
-                                                                if member_name_W[ten_F_day[i-1][n]] == 1 or member_name_W[ten_I_day[i-1][o]] == 1 or member_name_W[ten_J_day[i-1][p]]:
-                                                                    if member_name_R[ten_F_day[i-1][n]] == 1 or member_name_R[ten_I_day[i-1][o]] == 1 or member_name_R[ten_J_day[i-1][p]]:
-                                                                        count += 1
-                                                                        ten[count-1].append(day_shift_AH[i-1][k])
-                                                                        ten[count-1].append('熊田')
-                                                                        ten[count-1].append(day_shift_AH[i-1][j])
-                                                                        ten[count-1].append(day_shift_AH[i-1][l])
-                                                                        ten[count-1].append(day_shift_AH[i-1][m])
-                                                                        ten[count-1].append(ten_F_day[i-1][n])
-                                                                        ten[count-1].append(day_shift_AH[i-1][j])
-                                                                        ten[count-1].append('熊田')
-                                                                        ten[count-1].append(day_shift_AH[i-1][l])
-                                                                        ten[count-1].append(day_shift_AH[i-1][k])
-                                                                        ten[count-1].append(ten_I_day[i-1][o])
-                                                                        ten[count-1].append(day_shift_AH[i-1][m])
-                                                                        ten[count-1].append(ten_J_day[i-1][q])
-                                                                        ten_day_shift[i-1].append(ten[count-1])   
