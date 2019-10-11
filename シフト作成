@@ -136,10 +136,7 @@ for i in range(15):
     ten_H_S_day[i] = []        
 ten_I_day = list(range(15))#Iで入れるメンバー
 for i in range(15):
-    ten_I_day[i] = []
-ten_HI_day = list(range(15))#Iで入れるメンバー
-for i in range(15):
-    ten_HI_day[i] = []     
+    ten_I_day[i] = []   
 ten_II_day = list(range(15))#IIで入れるメンバー
 for i in range(15):
     ten_II_day[i] = []    
