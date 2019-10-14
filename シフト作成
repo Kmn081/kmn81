@@ -32,26 +32,26 @@ for i in range(26):#寿司場ができる人を読み込む
 for i in range(26):#洗い場ができる人を読み込む
     member_name_W[member_name[i]] = sheet['D' + str(i+4)].value
 for i in range(26):#レジ締めができる人を読み込む
-    member_name_R[member_name[i]] = sheet['E' + str(i+4)].value  
+    member_name_R[member_name[i]] = sheet['E' + str(i+4)].value     
     
- hope_shift = list(range(sheet.max_column - 1))#各メンバーのシフト希望
+hope_shift = list(range(26))#各メンバーのシフト希望
 
                   
-for i in range(sheet.max_column - 1):#各メンバーのシフト希望を読み込む
+for i in range(26):#各メンバーのシフト希望を読み込む
     hope_shift[i] = []
     for row_of_cell_objects in sheet['F' + str(i+4):'T' + str(i+4) ]:
         for cell_obj in row_of_cell_objects:  
             hope_shift[i].append(cell_obj.value)
-            
- date_shift = list(range(15))#日付ごとの各メンバーのシフト
+
+date_shift = list(range(15))#日付ごとの各メンバーのシフト
 for i in range(15):
     date_shift[i] = []   
 for i in range(0,15):#日付とメンバーのシフトを紐付ける    
     for column in sheet.iter_rows(min_row=4, min_col=6+i,max_row=29,max_col=6+i):
         for cell in column:
-            date_shift[i].append(cell.value)   
-            
- day_shift_A = list(range(15))#A(10時30分)でシフト希望をだしたメンバー
+            date_shift[i].append(cell.value) 
+
+day_shift_A = list(range(15))#A(10時30分)でシフト希望をだしたメンバー
 day_shift_AH = list(range(15))#A-H(1日)でシフト希望をだしたメンバー
 day_shift_B = list(range(15))#B(11時00分)でシフト希望をだしたメンバー
 day_shift_C = list(range(15))#C(12時00分)でシフト希望をだしたメンバー
@@ -93,7 +93,7 @@ for i in range(0,15):
                 day_shift_II[i].append(member_name[j-1])
             if cell.value == 'J':#各日付にJでシフト希望を出したメンバーを紐付ける
                 day_shift_J[i].append(member_name[j-1])
-
+                
 #各日付の各時間帯ごとのシフト希望を出したメンバーを入力する
 ten_A_day = list(range(15))#Aの時間帯に入れるメンバー
 for i in range(15):
@@ -136,7 +136,7 @@ for i in range(15):
     ten_H_S_day[i] = []        
 ten_I_day = list(range(15))#Iで入れるメンバー
 for i in range(15):
-    ten_I_day[i] = []   
+    ten_I_day[i] = []    
 ten_II_day = list(range(15))#IIで入れるメンバー
 for i in range(15):
     ten_II_day[i] = []    
@@ -145,9 +145,12 @@ for i in range(15):
     ten_J_day[i] = []       
 ten_day_shift = list(range(15))#ここに借りのシフトを入れていく
 for i in range(15):
-    ten_day_shift[i] = []        
-
+    ten_day_shift[i] = []  
+week = list(range(3))
+for i in range(3):
+    week[i] = []  
 count=0
+count2=0
 for i in range(1,16):#i:日付、1日毎にシフトを決めていく
     ten = list(range(100000))#ここに書く時間帯の仮シフトを追加していく
     for j in range(100000):
@@ -567,9 +570,9 @@ for i in range(1,16):#i:日付、1日毎にシフトを決めていく
                                                     for o in range(len(ten_F_day[i-1])):#F
                                                         if ten_F_day[i-1][o] != day_shift_AH[i-1][j] and ten_F_day[i-1][o] != day_shift_AH[i-1][k] and ten_F_day[i-1][o] != day_shift_AH[i-1][l] and ten_F_day[i-1][o] != day_shift_AH[i-1][m] and ten_F_day[i-1][o] != day_shift_A[i-1][n]:
                                                             for p in range(len(ten_II_day[i-1])):#II
-                                                                if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_A[i-1][n] and ten_II_day[i-1][p] != ten_F_day[i-1][o]:
+                                                                if ten_II_day[i-1][p] != day_shift_AH[i-1][j] and ten_II_day[i-1][p] != day_shift_AH[i-1][k] and ten_II_day[i-1][p] != day_shift_AH[i-1][l] and ten_II_day[i-1][p] != day_shift_AH[i-1][m] and ten_II_day[i-1][p] != day_shift_A[i-1][n] and ten_II_day[i-1][p] != ten_F_day[i-1][o] and ten_II_day[i-1][p] != '熊田':
                                                                     for q in range(len(ten_J_day[i-1])):#J
-                                                                        if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_A[i-1][n] and ten_J_day[i-1][q] != ten_F_day[i-1][o] and ten_J_day[i-1][q] != ten_II_day[i-1][p]:
+                                                                        if ten_J_day[i-1][q] != day_shift_AH[i-1][j] and ten_J_day[i-1][q] != day_shift_AH[i-1][k] and ten_J_day[i-1][q] != day_shift_AH[i-1][l] and ten_J_day[i-1][q] != day_shift_AH[i-1][m] and ten_J_day[q] != day_shift_A[i-1][n] and ten_J_day[i-1][q] != ten_F_day[i-1][o] and ten_J_day[i-1][q] != ten_II_day[i-1][p] and ten_J_day[i-1][q] != '熊田':
                                                                             if member_name_W[ten_F_day[i-1][o]] == 1 or member_name_W[ten_II_day[i-1][p]] == 1 or member_name_W[ten_J_day[i-1][q]]:
                                                                                 if member_name_R[ten_F_day[i-1][o]] == 1 or member_name_R[ten_II_day[i-1][p]] == 1 or member_name_R[ten_J_day[i-1][q]]:
                                                                                     count += 1
@@ -610,11 +613,11 @@ for i in range(1,16):#i:日付、1日毎にシフトを決めていく
                                     for m in range(len(day_shift_AH[i-1])):#C-II
                                         if day_shift_AH[i-1][m] != day_shift_AH[i-1][j] and day_shift_AH[i-1][m] != day_shift_AH[i-1][k] and day_shift_AH[i-1][m] != day_shift_AH[i-1][l]:
                                             for n in range(len(ten_F_day[i-1])):#F
-                                                if ten_F_day[i-1][n] != day_shift_AH[i-1][j] and ten_F_day[i-1][n] != day_shift_AH[i-1][k] and ten_F_day[i-1][n] != day_shift_AH[i-1][l] and ten_F_day[i-1][n] != day_shift_AH[i-1][m] :
+                                                if ten_F_day[i-1][n] != day_shift_AH[i-1][j] and ten_F_day[i-1][n] != day_shift_AH[i-1][k] and ten_F_day[i-1][n] != day_shift_AH[i-1][l] and ten_F_day[i-1][n] != day_shift_AH[i-1][m]:
                                                     for o in range(len(ten_I_day[i-1])):#I
-                                                        if ten_I_day[i-1][o] != day_shift_AH[i-1][j] and ten_I_day[i-1][o] != day_shift_AH[i-1][k] and ten_I_day[i-1][o] != day_shift_AH[i-1][l] and ten_I_day[i-1][o] != day_shift_AH[i-1][m] and ten_I_day[i-1][o] != ten_F_day[i-1][n]:
+                                                        if ten_I_day[i-1][o] != day_shift_AH[i-1][j] and ten_I_day[i-1][o] != day_shift_AH[i-1][k] and ten_I_day[i-1][o] != day_shift_AH[i-1][l] and ten_I_day[i-1][o] != day_shift_AH[i-1][m] and ten_I_day[i-1][o] != ten_F_day[i-1][n] and ten_I_day[i-1][o] != '熊田':
                                                             for p in range(len(ten_J_day[i-1])):#II
-                                                                if ten_J_day[i-1][p] != day_shift_AH[i-1][j] and ten_J_day[i-1][p] != day_shift_AH[i-1][k] and ten_J_day[i-1][p] != day_shift_AH[i-1][l] and ten_J_day[i-1][p] != day_shift_AH[i-1][m] and ten_J_day[i-1][p] != ten_F_day[i-1][n] and ten_J_day[i-1][p] != ten_I_day[i-1][o]:
+                                                                if ten_J_day[i-1][p] != day_shift_AH[i-1][j] and ten_J_day[i-1][p] != day_shift_AH[i-1][k] and ten_J_day[i-1][p] != day_shift_AH[i-1][l] and ten_J_day[i-1][p] != day_shift_AH[i-1][m] and ten_J_day[i-1][p] != ten_F_day[i-1][n] and ten_J_day[i-1][p] != ten_I_day[i-1][o] and ten_J_day[i-1][p] != '熊田':
                                                                     if member_name_W[ten_F_day[i-1][n]] == 1 or member_name_W[ten_I_day[i-1][o]] == 1 or member_name_W[ten_J_day[i-1][p]]:
                                                                         if member_name_R[ten_F_day[i-1][n]] == 1 or member_name_R[ten_I_day[i-1][o]] == 1 or member_name_R[ten_J_day[i-1][p]]:
                                                                             count += 1
@@ -633,6 +636,11 @@ for i in range(1,16):#i:日付、1日毎にシフトを決めていく
                                                                             ten[count-1].append(ten_J_day[i-1][p])
                                                                             ten_day_shift[i-1].append(ten[count-1])       
     else: #平日の時、処理を行う
+        week[count2].append(i)
+        if day_of_the_week[i] == '金':
+            count2+=1 
+        ten_day_shift2 = {}        
+        count3=0    
         #H-N 1           1から5までの数字にメンバーを割り当てていく
         #H-S 2           平日の場合はパターン数が土日よりも多くはならないため制約を設けず行う
         #H   3
@@ -656,5 +664,92 @@ for i in range(1,16):#i:日付、1日毎にシフトを決めていく
                                             ten[count-1].append(ten_I_day[i-1][m])
                                             ten[count-1].append(ten_J_day[i-1][n])
                                             ten_day_shift[i-1].append(ten[count-1]) 
-                                            
-            
+                                         
+for m in range(len(week)):#週ごとに処理を行う
+    if len(week[m])>3:#週に3日以上ある場合に処理を行う
+        member_week_count = list(range(26))#メンバー毎の週にシフト希望個数
+        for i in range(26):
+            member_week_count[i] = []
+        for i in range(26):
+            member_week_count[i]=0#初期化
+            for j in range(len(week[m])):#週に何個シフト希望を出したかを調べる
+                if hope_shift[i][week[m][j]-1] != 0:#hope_shiftが0でないとき処理を行う
+                    if hope_shift[i][week[m][j]-1] != 0:#hope_shiftからシフト希望個数を出す
+                        member_week_count[i] += 1              
+        for i in range(len(week[m])):#週に1個シフト希望を出した人をシフトに入れる
+            for j in range(26):
+                del_shift = []#週に1個シフト希望を出した人が入っていない仮シフトを消すために使う
+                count4=0#初期化
+                if member_week_count[j] == 1:#週に1個シフト希望を出した人を出す
+                    if hope_shift[j][week[m][i]-1] != 0:#hope_shiftが0でないとき処理を行う    
+                        for k in range(len(ten_day_shift[week[m][i]-1])):#週に1個シフト希望を出した人が入っていない仮シフトを調べdel_shiftに加える
+                            if member_name[j] not in ten_day_shift[week[m][i]-1][k]:
+                                del_shift.append(k)
+                        for l in range(len(del_shift)):#週に1個シフト希望を出した人が入っていない仮シフトを消していく
+                            del ten_day_shift[week[m][i]-1][del_shift[l]-count4]
+                            count4+=1                      
+        com_shift=list(range(26))#どの日のシフトを抜けばいいのかを決める
+        for i in range(26):
+            com_shift[i] = []
+        for i in range(26):
+            if member_week_count[i] == len(week[m]):#週のすべてにシフト希望を出した人を一日抜いてシフトに入れる
+                for j in range(len(week[m])):
+                    del_shift = []#仮シフトを消すために使う
+                    count4=0 
+                    for k in range(len(ten_day_shift[week[m][j]-1])):#週のすべてにシフト希望を出した人が入っていない仮シフトを調べる
+                        if hope_shift[i][week[m][j]-1] != 0:
+                            if member_name[i] not in ten_day_shift[week[m][j]-1][k]:
+                                del_shift.append(k)
+                            com_shift[i].append(len(del_shift))#com_shiftに週のすべてにシフト希望を出した人が入っていない仮シフトの数を入れる
+                for j in range(len(week[m])):
+                    if j != com_shift[i].index(min(com_shift[i])):#com_shiftのなかで一番少ない日以外に処理を行う
+                        del_shift = []
+                        count4=0
+                        if member_week_count[i] == len(week[m]):#週のすべてにシフト希望を出した人の場合に処理を行う
+                            if hope_shift[i][week[m][j]-1] != 0: 
+                                for k in range(len(ten_day_shift[week[m][j]-1])):
+                                    if member_name[i] not in ten_day_shift[week[m][j]-1][k]:#週のすべてにシフト希望を出した人がいない仮シフトを調べる
+                                        del_shift.append(k)
+                                for l in range(len(del_shift)):#週のすべてにシフト希望を出した人がいない仮シフトを消していく
+                                    del ten_day_shift[week[m][j]-1][del_shift[l]-count4]
+                                    count4+=1         
+                    else:#com_shiftのなかで一番少ない日に処理を行う
+                        del_shift = []
+                        count4=0
+                        if member_week_count[i] == len(week[m]):#週のすべてにシフト希望を出した人の場合に処理を行う
+                            if hope_shift[i][week[m][j]-1] != 0: 
+                                for k in range(len(ten_day_shift[week[m][j]-1])):#週のすべてにシフト希望を出した人がいる仮シフトを調べる
+                                    if member_name[i] in ten_day_shift[week[m][j]-1][k]:
+                                        del_shift.append(k)
+                                for l in range(len(del_shift)):#週のすべてにシフト希望を出した人がいる仮シフトを消していく
+                                    del ten_day_shift[week[m][j]-1][del_shift[l]-count4]
+                                    count4+=1  
+
+wb2 = openpyxl.Workbook()#新しいエクセルファイルを作成する
+wb2.save('C:\\home\\dec_shift2.xlsx')#ファイルを保存
+
+dec_sheet = wb2['Sheet']#dec_sheetを新しいファイルの'Sheet'とする
+for i in range(1,16):#日付を書き込む
+    dec_sheet.cell(row=2,column=i+1).value = i
+for i in range(26):#メンバー名を書き込む
+    dec_sheet.cell(row=i+3,column=1).value = member_name[i]
+
+wb2.save('C:\\home\\dec_shift2.xlsx')# ファイルを保存
+
+weekdays = {0:'H_N',1:'H_S',2:'H',3:'I',4:'J'}#平日のシフトの内訳
+holidays = {0:'A_N',1:'A_S',2:'A_H',3:'B',4:'C',5:'F',6:'H_N',7:'H_S',8:'H1',9:'H2',10:'I',11:'II',12:'J'}#休日のシフトの内訳
+for i in range(1,16):
+    if day_of_the_week[i] == '土' or day_of_the_week[i] == '日':#休日の処理
+        for j in range(len(ten_day_shift[i-1][0])):#昼のみor夜のみの人を入力する
+            if ten_day_shift[i-1][0].count(ten_day_shift[i-1][0][j]) == 1:
+                member_name.index(ten_day_shift[i-1][0][j])
+                dec_sheet.cell(row=member_name.index(ten_day_shift[i-1][0][j])+3,column=i+1).value = holidays[j]
+            elif ten_day_shift[i-1][0].count(ten_day_shift[i-1][0][j]) == 2:#一日の人を入力する
+                indexes = [z for z, x in enumerate(ten_day_shift[i-1][0]) if x == ten_day_shift[i-1][0][j]]
+                dec_sheet.cell(row=member_name.index(ten_day_shift[i-1][0][j])+3,column=i+1).value = holidays[indexes[0]] + ' + ' + holidays[indexes[1]]
+    else:#平日の処理
+        for j in range(len(ten_day_shift[i-1][0])):#平日のシフトを入力する
+            member_name.index(ten_day_shift[i-1][0][j])
+            dec_sheet.cell(row=member_name.index(ten_day_shift[i-1][0][j])+3,column=i+1).value = weekdays[j]
+        
+wb2.save('C:\\home\\dec_shift2.xlsx')#ファイルを保存
